@@ -245,6 +245,8 @@ class StyleTTS2GUI(QMainWindow):
         self.layout.addWidget(self.infer_frame())
 
         self.find_models()
+
+        os.makedirs(self.config['output_dir'], exist_ok=True)
     pass
 
     def top_frame(self):
