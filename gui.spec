@@ -46,12 +46,20 @@ coll = COLLECT(
     name='styletts2',
 )
 
-#import os
-#import shutil
-#shutil.copy2('config.yaml','dist/ponysorter_b/config.yaml')
-#shutil.copy2('hashes.json','dist/ponysorter_b/hashes.json')
-#shutil.copy2('numget.jpg','dist/ponysorter_b/numget.jpg')
-#shutil.copy2('episodes_labels_index.json',
-#    'dist/ponysorter_b/episodes_labels_index.json')
-#os.makedirs('dist/ponysorter_b/in_audio', exist_ok=True)
-#shutil.copytree('sup_audio','dist/ponysorter_b/sup_audio')
+import os
+import shutil
+shutil.copy2('config.yaml','dist/styletts2/config.yaml')
+shutil.copy2('episodes_labels_index.json',
+    'dist/styletts2/episodes_labels_index.json')
+shutil.copy2('horsewords.clean',
+    'dist/styletts2/horsewords.clean')
+os.makedirs('dist/styletts2/Models', exist_ok=True)
+os.makedirs('dist/styletts2/Utils/PLBERT', exist_ok=True)
+os.makedirs('dist/styletts2/Utils/JDC', exist_ok=True)
+os.makedirs('dist/styletts2/Utils/ASR', exist_ok=True)
+shutil.copy2('Utils/PLBERT/config.yml','dist/styletts2/Utils/PLBERT/config.yml')
+shutil.copy2('Utils/ASR/config.yml','dist/styletts2/Utils/ASR/config.yml')
+shutil.copy2('Utils/ASR/epoch_00080.pth','dist/styletts2/Utils/ASR/epoch_00080.pth')
+shutil.copy2('Utils/JDC/bst.t7','dist/styletts2/Utils/JDC/bst.t7')
+shutil.copy2('Utils/JDC/bst_rmvpe.t7','dist/styletts2/Utils/JDC/bst_rmvpe.t7')
+shutil.copy2('Utils/PLBERT/step_1000000.t7','dist/styletts2/Utils/PLBERT/step_1000000.t7')
