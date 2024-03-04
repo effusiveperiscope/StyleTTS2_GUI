@@ -11,7 +11,7 @@ Models/
 ```
 `styles.json` is an optional json containing tags and precomputed style vectors. If not supplied the user will have to supply their own reference audio.
 
-Run `.exe`.
+Run `styletts2.exe`.
 
 # Usage tips
 - Sentences not terminated with punctuation can have undesired results.
