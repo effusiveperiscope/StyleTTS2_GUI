@@ -3,6 +3,8 @@ from PyInstaller.utils.hooks import collect_data_files
 
 datas = []
 datas += collect_data_files('gruut')
+datas += collect_data_files('gruut_ipa')
+datas += collect_data_files('gruut_lang_en')
 
 
 a = Analysis(
@@ -10,7 +12,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=datas,
-    hiddenimports=[],
+    hiddenimports=['gruut_ipa','gruut_lang_en'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
