@@ -17,7 +17,8 @@ CMU_IPA_MAPPING = {
     "D": "d",
     "DH": "ð",
     "EH": "ɛ",
-    "ER": "ɝ",
+    #"ER": "ɝ",
+    "ER": "əɹ",
     "EY": "eɪ",
     "F": "f",
     "G": "ɡ",
@@ -136,7 +137,8 @@ def _chunk_conv_to_ipa(text : str):
                 elif word.phonemes:
                     word_str = ''.join(word.phonemes)
                     output.append(word_str)
-        return ''.join(output)
+    #print(output)
+    return ''.join(output)
 
 def conv_to_ipa(text : str, print_unhandled : bool = False,
     normalize : bool = False):

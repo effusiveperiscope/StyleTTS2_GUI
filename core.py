@@ -203,7 +203,8 @@ class StyleTTS2Core:
 
     def generate_bert_encoder_override(self, text):
         text = text.strip()
-        ps = conv_to_ipa3(text)+'$'
+        ps, n_words = conv_to_ipa3(text)
+        ps += '$'
         tokens = textclenaer(ps)
         tokens.insert(0, 0)
         tokens = torch.LongTensor(tokens).to(self.device).unsqueeze(0)

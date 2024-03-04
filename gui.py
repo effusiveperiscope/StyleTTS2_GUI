@@ -23,6 +23,7 @@ from log import logger
 from io import BytesIO
 from nltk import sent_tokenize
 from utils import sanitize_filename
+import traceback
 
 class FileButton(QPushButton):
     fileDropped = pyqtSignal(list)
@@ -336,7 +337,7 @@ class StyleTTS2GUI(QMainWindow):
         infer_settings_lay.addWidget(self.alpha)
 
         self.beta = FieldWidget(
-            QLabel("Beta"), QLineEdit("0.9"))
+            QLabel("Beta"), QLineEdit("0.6"))
         self.beta.field.setValidator(QDoubleValidator(0.0, 1.0, 3))
         self.beta.label.setToolTip(
             "Controls how much synthesized audio prosody is conditioned"
@@ -363,7 +364,7 @@ class StyleTTS2GUI(QMainWindow):
         infer_settings_lay.addWidget(self.embedding_scale)
 
         self.target_wpm = FieldWidget(
-            QLabel("Target wpm"), QLineEdit("150"))
+            QLabel("Target wpm"), QLineEdit("170"))
         self.target_wpm.field.setValidator(QIntValidator(1,1000))
         infer_settings_lay.addWidget(self.target_wpm)
 
@@ -505,6 +506,7 @@ class StyleTTS2GUI(QMainWindow):
                         target_wpm=int(self.target_wpm.text()),
                         f0_adjust=int(self.f0.text()))
                 except Exception as e:
+                    traceback.print_exception(e)
                     logger.error(e)
                     return
                 sf.write(output_name, out, self.core.sr, format='flac')
@@ -535,6 +537,7 @@ class StyleTTS2GUI(QMainWindow):
                             target_wpm=int(self.target_wpm.text()),
                             f0_adjust=int(self.f0.text()))
                     except Exception as e:
+                        traceback.print_exception(e)
                         logger.error(e)
                     wavs.append(wav)
                 out = np.concatenate(wavs)
