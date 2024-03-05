@@ -261,7 +261,8 @@ class StyleTTS2Core:
             x, _ = self.model.predictor.lstm(d)
             duration = self.model.predictor.duration_proj(x)
             duration = torch.sigmoid(duration).sum(axis=-1)
-            duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
+            if target_wpm is not None:
+                duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
             pred_dur = torch.round(duration.squeeze()).clamp(min=1)
 
 
@@ -352,7 +353,9 @@ class StyleTTS2Core:
             x, _ = self.model.predictor.lstm(d)
             duration = self.model.predictor.duration_proj(x)
             duration = torch.sigmoid(duration).sum(axis=-1)
-            duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
+            if target_wpm is not None:
+                print("Using duration scaling")
+                duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
             pred_dur = torch.round(duration.squeeze()).clamp(min=1)
 
 

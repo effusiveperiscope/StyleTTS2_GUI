@@ -368,6 +368,11 @@ class StyleTTS2GUI(QMainWindow):
         self.target_wpm.field.setValidator(QIntValidator(1,1000))
         infer_settings_lay.addWidget(self.target_wpm)
 
+        self.dur_switch = QCheckBox("Enable duration scaling")
+        self.dur_switch.setToolTip("Uses the target wpm setting to scale duration of generated audio.")
+        self.dur_switch.setChecked(True)
+        infer_settings_lay.addWidget(self.dur_switch)
+
         self.style_blend = FieldWidget(
             QLabel("Style blend"), QLineEdit("0.7"))
         self.style_blend.field.setValidator(QDoubleValidator(0.0,1.0,2))
@@ -383,6 +388,10 @@ class StyleTTS2GUI(QMainWindow):
 
         self.longform = QCheckBox("Long form inference mode")
         infer_settings_lay.addWidget(self.longform)
+
+        self.longform_single = QCheckBox("Only infer one iteration in longform mode")
+        self.longform_single.setChecked(True)
+        infer_settings_lay.addWidget(self.longform_single)
 
         infer_outputs_frame = QGroupBox("Outputs")
         layout.addWidget(infer_outputs_frame)
@@ -489,8 +498,9 @@ class StyleTTS2GUI(QMainWindow):
                 self.config.device).to(torch.float32)
 
         start_time = time.time()
+        n_infer = self.config.n_infer
         if not self.longform.isChecked():
-            for i in range(self.config.n_infer):
+            for i in range(n_infer):
                 self.infer_progress.setValue(
                     int((i+1)*100/(self.config.n_infer)))
                 j = i
@@ -498,6 +508,10 @@ class StyleTTS2GUI(QMainWindow):
                     j += 1
                 output_name = self.output_name(j)
                 output_basename = Path(output_name).name
+                if self.dur_switch.isChecked():
+                    target_wpm = int(self.target_wpm.text())
+                else:
+                    target_wpm = None
                 try:
                     out, ps = self.core.inference(self.text_field.toPlainText(),
                         style_vec,
@@ -505,7 +519,7 @@ class StyleTTS2GUI(QMainWindow):
                         beta=float(self.beta.text()),
                         diffusion_steps=int(self.diffusion_steps.text()),
                         embedding_scale=float(self.embedding_scale.text()),
-                        target_wpm=int(self.target_wpm.text()),
+                        target_wpm=target_wpm,
                         f0_adjust=int(self.f0.text()))
                 except Exception as e:
                     traceback.print_exception(e)
@@ -515,7 +529,7 @@ class StyleTTS2GUI(QMainWindow):
                 self.audio_previews[i].from_file(output_name)
                 self.audio_previews[i].set_text(output_basename)
         else:
-            for i in range(self.config.n_infer):
+            for i in range(n_infer):
                 self.infer_progress.setValue(
                     int((i+1)*100/(self.config.n_infer)))
                 j = i
@@ -523,6 +537,10 @@ class StyleTTS2GUI(QMainWindow):
                     j += 1
                 output_name = self.output_name(j)
                 output_basename = Path(output_name).name
+                if self.dur_switch.isChecked():
+                    target_wpm = int(self.target_wpm.text())
+                else:
+                    target_wpm = None
                 textlist = sent_tokenize(self.text_field.toPlainText())
                 s_prev = None
                 wavs = []
@@ -536,7 +554,7 @@ class StyleTTS2GUI(QMainWindow):
                             t=float(self.style_blend.text()),
                             diffusion_steps=int(self.diffusion_steps.text()),
                             embedding_scale=float(self.embedding_scale.text()),
-                            target_wpm=int(self.target_wpm.text()),
+                            target_wpm=target_wpm,
                             f0_adjust=int(self.f0.text()))
                     except Exception as e:
                         traceback.print_exception(e)
