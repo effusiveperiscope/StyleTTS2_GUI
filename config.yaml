@@ -2,3 +2,4 @@ device: cpu
 n_infer: 3
 models_dir: Models
 output_dir: results
+dark_mode: true 
