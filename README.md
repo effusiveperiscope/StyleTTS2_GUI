@@ -15,8 +15,11 @@ Run `styletts2.exe`.
 
 # Usage tips
 - Sentences not terminated with punctuation can have undesired results.
-- ARPABET escapes `{AH0}` and IPA escapes `<>` are supported. 
+- ARPABET escapes `{AH0}` and IPA escapes `<dɹˈɪftɪŋ>` are supported. 
 - The pipe symbol `|` can be used to condition style diffusion on a different text input: `Hi, my name is Twilight Sparkle.|Oh no! Oh no!`
+- You can change the number of generations in `config.yaml` under `n_infer`
+- You can drag and drop reference audio into the acoustic and prosodic custom reference file buttons.
+- Results are outputted to the `results` directory. You can also drag and drop results out from the corresponding preview button.
 
 # Performance
 There is an initial startup cost for the first line synthesized. After that gens are faster.
