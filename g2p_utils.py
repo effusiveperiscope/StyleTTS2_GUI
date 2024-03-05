@@ -273,7 +273,7 @@ def conv_to_ipa3(text):
         c = text[i]
 
         if mode == TokenizerMode.DEFAULT:
-            if c in '.!?':
+            if c in '.!?,':
                 if len(chunk):
                     output += _chunk_conv_to_ipa(chunk)
                     word_count += 1
