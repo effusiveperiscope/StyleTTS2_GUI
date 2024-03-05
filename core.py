@@ -131,7 +131,7 @@ class StyleTTS2Core:
         audio, index = librosa.effects.trim(wave, top_db=30)
         if sr != self.sr:
             audio = librosa.resample(audio, sr, self.sr)
-        print(f"Using sr {self.sr} on {path}")
+        #print(f"Using sr {self.sr} on {path}")
         if audio.shape[0] < self.min_sample_length:
             return None
         mel_tensor = self.preprocess(audio).to(self.device)
