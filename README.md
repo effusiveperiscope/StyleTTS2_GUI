@@ -1,7 +1,7 @@
 # Setup (Windows)
 Download the [release](https://drive.google.com/file/d/1iW07K222Hj5jRN7zWCu1FPaAaRtXIoUk/view?usp=sharing).
 
-Download any desired extra models from [this repository](https://huggingface.co/therealvul/StyleTTS2_GUI_models/tree/main) and unzip them to the Models folder.
+Download any desired extra models from [this repository](https://huggingface.co/therealvul/StyleTTS2_GUI_models/tree/main) and unzip them to the Models folder. Below is the expected file structure:
 ```
 Models/
     Multi0_40_24k/
@@ -35,3 +35,6 @@ By default this runs on cpu only. If you have CUDA installed you can try switchi
 
 # Precomputed style vectors
 Style vectors are precomputed using `precompute_style_vectors.ipynb`. This relies on a custom indexing schema for the Pony Preservation Project dataset specifically, but it is quite simple so it should be retoolable for other datasets.
+
+# Troubleshooting
+- `DirectShowPlayerService::doRender: Unknown error 0x80040266`: On Windows, Qt uses DirectShow which depends on external audio codecs for FLAC playback. Try installing [K-Lite Codec Pack](https://codecguide.com/download_kl.htm). If this becomes enough of an issue I might consider a different audio playback backend.
