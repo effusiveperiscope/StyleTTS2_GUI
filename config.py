@@ -10,7 +10,8 @@ def load_config():
             'device': 'cuda',
             'n_infer': 3,
             'models_dir': 'Models',
-            'output_dir': 'results'
+            'output_dir': 'results',
+            'dark_mode': False,
         })
     return config
 

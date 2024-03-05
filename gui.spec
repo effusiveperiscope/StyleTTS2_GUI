@@ -51,6 +51,7 @@ coll = COLLECT(
 import os
 import shutil
 shutil.copy2('config.yaml','dist/styletts2/config.yaml')
+shutil.copy2('ManjaroMix.yaml','dist/styletts2/ManjaroMix.yaml')
 shutil.copy2('episodes_labels_index.json',
     'dist/styletts2/episodes_labels_index.json')
 shutil.copy2('horsewords.clean',
@@ -65,3 +66,4 @@ shutil.copy2('Utils/ASR/epoch_00080.pth','dist/styletts2/Utils/ASR/epoch_00080.p
 shutil.copy2('Utils/JDC/bst.t7','dist/styletts2/Utils/JDC/bst.t7')
 shutil.copy2('Utils/JDC/bst_rmvpe.t7','dist/styletts2/Utils/JDC/bst_rmvpe.t7')
 shutil.copy2('Utils/PLBERT/step_1000000.t7','dist/styletts2/Utils/PLBERT/step_1000000.t7')
+shutil.copytree('Models/Multi0_40_24k','dist/styletts2/Models/Multi0_40_24k')

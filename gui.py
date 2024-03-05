@@ -1,6 +1,6 @@
 from core import StyleTTS2Core
 from PyQt5.QtCore import (pyqtSignal, Qt, QBuffer, QSize, QUrl, QMimeData,
-    QByteArray)
+    QByteArray, QMargins)
 from PyQt5.QtGui import (QIcon, QDrag, QIntValidator, QDoubleValidator)
 from PyQt5.QtWidgets import (QWidget, QApplication, QMainWindow, QVBoxLayout,
     QHBoxLayout, QFrame, QPushButton, QPlainTextEdit, QGroupBox, QRadioButton,
@@ -230,12 +230,12 @@ class StyleTTS2GUI(QMainWindow):
         self.layout.addWidget(self.top_frame())
 
         self.text_box = QGroupBox("Text to infer")
+        self.text_box.setMinimumHeight(420)
         self.layout.addWidget(self.text_box)
         self.text_lay = QVBoxLayout(self.text_box)
+        self.text_lay.setAlignment(Qt.AlignTop)
 
         self.text_field = QPlainTextEdit()
-        self.text_field.setMinimumHeight(400)
-        #self.text_field.setMaximumHeight
         self.text_lay.addWidget(self.text_field, stretch=2)
 
         self.phonemes_label = QLabel("Phonemes")
@@ -552,6 +552,11 @@ class StyleTTS2GUI(QMainWindow):
 
 def gui_main(config):
     app = QApplication(sys.argv)
+
+    if config.get('dark_mode', False):
+        with open('ManjaroMix.qss', 'r') as f:
+            style = f.read()
+            app.setStyleSheet(style)
 
     w = StyleTTS2GUI(config)
     w.show()
