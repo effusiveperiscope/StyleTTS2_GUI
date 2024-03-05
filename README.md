@@ -13,7 +13,14 @@ Models/
 
 Run `styletts2.exe`.
 
-# Usage tips
+# Usage
+![](https://raw.githubusercontent.com/effusiveperiscope/StyleTTS2_GUI/main/docs/1.png)
+
+1. Select model and style at the top.
+2. Enter text in the middle.
+3. Press the inference button at the bottom to infer.
+4. Check tooltips for further guidance on inference settings.
+
 - Sentences not terminated with punctuation can have undesired results.
 - ARPABET escapes `{AH0}` and IPA escapes `<dɹˈɪftɪŋ>` are supported. 
 - The pipe symbol `|` can be used to condition style diffusion on a different text input: `Hi, my name is Twilight Sparkle.|Oh no! Oh no!`
