@@ -25,3 +25,6 @@ Run `styletts2.exe`.
 There is an initial startup cost for the first line synthesized. After that gens are faster.
 
 By default this runs on cpu only. If you have CUDA installed you can try switching the inference device in `config.yaml` to `'cuda'`. On my machine, a line that took ~0.8s/it on CPU took ~0.4s/it on GPU, disregarding the first time synthesis was run.
+
+# Precomputed style vectors
+Style vectors are precomputed using `precompute_style_vectors.ipynb`. This relies on a custom indexing schema for the Pony Preservation Project dataset specifically, but it is quite simple so it should be retoolable for other datasets.
