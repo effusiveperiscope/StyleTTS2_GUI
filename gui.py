@@ -384,10 +384,6 @@ class StyleTTS2GUI(QMainWindow):
         self.longform = QCheckBox("Long form inference mode")
         infer_settings_lay.addWidget(self.longform)
 
-        self.infer_button = QPushButton("Infer")
-        infer_settings_lay.addWidget(self.infer_button)
-        self.infer_button.pressed.connect(self.infer_cb)
-        
         infer_outputs_frame = QGroupBox("Outputs")
         layout.addWidget(infer_outputs_frame)
         infer_outputs_lay = QVBoxLayout(infer_outputs_frame)
@@ -397,12 +393,18 @@ class StyleTTS2GUI(QMainWindow):
         for i in range(self.config.n_infer):
             self.audio_previews[i] = AudioPreviewWidget()
             infer_outputs_lay.addWidget(self.audio_previews[i])
+
+        self.infer_button = QPushButton("Infer")
+        infer_outputs_lay.addWidget(self.infer_button)
+        self.infer_button.pressed.connect(self.infer_cb)
         
+        infer_outputs_lay.addStretch(1)
         self.infer_time = QLabel("Inference time:")
         infer_outputs_lay.addWidget(self.infer_time)
 
         self.infer_progress = QProgressBar()
         infer_outputs_lay.addWidget(self.infer_progress)
+        
         return frame
 
     def load_model_cb(self):
