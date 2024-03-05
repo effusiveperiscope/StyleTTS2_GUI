@@ -1,5 +1,5 @@
 # Setup (Windows)
-Download the release.
+Download the [release](https://drive.google.com/file/d/1iW07K222Hj5jRN7zWCu1FPaAaRtXIoUk/view?usp=sharing).
 
 Download models from this repository and unzip them to the Models folder.
 ```
