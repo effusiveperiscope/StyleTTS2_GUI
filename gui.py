@@ -422,9 +422,15 @@ class StyleTTS2GUI(QMainWindow):
         self.core.load_model(spec['config'], spec['ckpt'])
 
         self.acoustic_dropdown.clear()
-        for key,style in spec['style_index_data'].items():
-            self.acoustic_dropdown.addItem(key)
+        if 'style_index_data' in spec:
             # Styles are not computed until inference time
+            for key,style in spec['style_index_data'].items():
+                self.acoustic_dropdown.addItem(key)
+            self.acoustic_from_preset.setEnabled(True)
+            self.acoustic_from_preset.setChecked(True)
+        else:
+            self.acoustic_from_preset.setEnabled(False)
+            self.acoustic_from_custom.setChecked(True)
 
     def current_spec(self):
         key = self.model_dropdown.currentText()
@@ -472,6 +478,9 @@ class StyleTTS2GUI(QMainWindow):
             prosodic_vec = prosodic_vec.cpu().numpy()
         else:
             key = self.acoustic_dropdown.currentText()
+            if not 'style_index_data' in self.current_spec():
+                logger.warn("No acoustic style provided")
+                return
             style_vec = self.current_spec()['style_index_data'][key]
             style_vec = np.array(style_vec)
 
