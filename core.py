@@ -306,16 +306,16 @@ class StyleTTS2Core:
                 rmvpe_pitch = self.rmvpe_24k.infer_from_audio(out.squeeze().cpu().numpy(), thred=0.03)
             elif self.sr == 48000:
                 rmvpe_pitch = self.rmvpe_48k.infer_from_audio(out.squeeze().cpu().numpy(), thred=0.03)
-            plt.figure(figsize=(10,5))
-            plt.plot(F0_pred.squeeze().cpu().numpy(), c='green')
-            plt.plot(rmvpe_pitch, c='red')
-            #plt.subplot(1,2,1)
-            #F0_pred_numpy = F0_pred.squeeze().cpu().numpy()[:rmvpe_pitch.size]
-            #rmvpe_pitch = rmvpe_pitch[:F0_pred_numpy.size]
-            #plt.plot(F0_pred.squeeze().cpu().numpy() / rmvpe_pitch, c='purple')
-            #plt.subplot(1,2,2)
-            #plt.plot(F0_pred.squeeze().cpu().numpy() - rmvpe_pitch, c='purple')
-            plt.show()
+            #plt.figure(figsize=(10,5))
+            #plt.plot(F0_pred.squeeze().cpu().numpy(), c='green')
+            #plt.plot(rmvpe_pitch, c='red')
+            ##plt.subplot(1,2,1)
+            ##F0_pred_numpy = F0_pred.squeeze().cpu().numpy()[:rmvpe_pitch.size]
+            ##rmvpe_pitch = rmvpe_pitch[:F0_pred_numpy.size]
+            ##plt.plot(F0_pred.squeeze().cpu().numpy() / rmvpe_pitch, c='purple')
+            ##plt.subplot(1,2,2)
+            ##plt.plot(F0_pred.squeeze().cpu().numpy() - rmvpe_pitch, c='purple')
+            #plt.show()
 
             # So, the F0_pred is about 1.25x higher than the actual F0
         
