@@ -20,6 +20,7 @@ from torch import nn
 import torch.nn.functional as F
 import torchaudio
 import librosa
+import matplotlib.pyplot as plt
 
 from models import *
 from utils import *
@@ -73,6 +74,14 @@ class StyleTTS2Core:
         else:
             self.device = device
         self.min_sample_length = 20000
+
+        from rmvpe import RMVPE
+        self.rmvpe_24k = RMVPE('rmvpe.pt', is_half=False,
+            device='cuda' if torch.cuda.is_available() else 'cpu',
+            sr=24000)
+        self.rmvpe_48k = RMVPE('rmvpe.pt', is_half=False,
+            device='cuda' if torch.cuda.is_available() else 'cpu',
+            sr=48000)
 
     def preprocess(self, wave):
         wave_tensor = torch.from_numpy(wave).float()
@@ -131,7 +140,7 @@ class StyleTTS2Core:
         audio, index = librosa.effects.trim(wave, top_db=30)
         if sr != self.sr:
             audio = librosa.resample(audio, sr, self.sr)
-        #print(f"Using sr {self.sr} on {path}")
+        print(f"Using sr {self.sr} on {path}")
         if audio.shape[0] < self.min_sample_length:
             return None
         mel_tensor = self.preprocess(audio).to(self.device)
@@ -151,8 +160,8 @@ class StyleTTS2Core:
         text_aligner = load_ASR_models(ASR_path, ASR_config)
 
         # load pretrained F0 model
-        F0_path = config.get('F0_path', False)
-        pitch_extractor = load_F0_models(F0_path)
+        #F0_path = config.get('F0_path', False)
+        #pitch_extractor = load_F0_models(F0_path)
 
         # load BERT model
         from Utils.PLBERT.util import load_plbert
@@ -168,9 +177,10 @@ class StyleTTS2Core:
 
         model_params = recursive_munch(config['model_params'])
         self.model_params = model_params
-        model = build_model(recursive_munch(config['model_params']), text_aligner, pitch_extractor, plbert, sr=sr)
-        _ = [model[key].eval() for key in model]
-        _ = [model[key].to(self.device) for key in model]
+        model = build_model(recursive_munch(config['model_params']), text_aligner, None, plbert, sr=sr)
+        model.pop('pitch_extractor')
+        _ = [model[key].eval() for key in model if model[key] is not None]
+        _ = [model[key].to(self.device) for key in model if model[key] is not None]
 
         print(f"Loading {model_path}")
         params_whole = torch.load(model_path, map_location='cpu')
@@ -192,7 +202,7 @@ class StyleTTS2Core:
                     model[key].load_state_dict(new_state_dict, strict=False)
         #             except:
         #                 _load(params[key], model[key])
-        _ = [model[key].eval() for key in model]
+        _ = [model[key].eval() for key in model if model[key] is not None]
         self.model = model
         self.sampler = DiffusionSampler(
             model.diffusion.diffusion,
@@ -261,8 +271,7 @@ class StyleTTS2Core:
             x, _ = self.model.predictor.lstm(d)
             duration = self.model.predictor.duration_proj(x)
             duration = torch.sigmoid(duration).sum(axis=-1)
-            if target_wpm is not None:
-                duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
+            duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
             pred_dur = torch.round(duration.squeeze()).clamp(min=1)
 
 
@@ -292,6 +301,23 @@ class StyleTTS2Core:
 
             out = self.model.decoder(asr, 
                                     F0_pred, N_pred, ref.squeeze().unsqueeze(0))
+
+            if self.sr == 24000:
+                rmvpe_pitch = self.rmvpe_24k.infer_from_audio(out.squeeze().cpu().numpy(), thred=0.03)
+            elif self.sr == 48000:
+                rmvpe_pitch = self.rmvpe_48k.infer_from_audio(out.squeeze().cpu().numpy(), thred=0.03)
+            plt.figure(figsize=(10,5))
+            plt.plot(F0_pred.squeeze().cpu().numpy(), c='green')
+            plt.plot(rmvpe_pitch, c='red')
+            #plt.subplot(1,2,1)
+            #F0_pred_numpy = F0_pred.squeeze().cpu().numpy()[:rmvpe_pitch.size]
+            #rmvpe_pitch = rmvpe_pitch[:F0_pred_numpy.size]
+            #plt.plot(F0_pred.squeeze().cpu().numpy() / rmvpe_pitch, c='purple')
+            #plt.subplot(1,2,2)
+            #plt.plot(F0_pred.squeeze().cpu().numpy() - rmvpe_pitch, c='purple')
+            plt.show()
+
+            # So, the F0_pred is about 1.25x higher than the actual F0
         
             #print(out.shape)
             #print(f"duration sum: {duration.sum()} out shape: {out.shape} = {out.squeeze().shape[0]/self.sr} * {self.sr}")
@@ -353,9 +379,7 @@ class StyleTTS2Core:
             x, _ = self.model.predictor.lstm(d)
             duration = self.model.predictor.duration_proj(x)
             duration = torch.sigmoid(duration).sum(axis=-1)
-            if target_wpm is not None:
-                print("Using duration scaling")
-                duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
+            duration = duration_scale(text, duration, n_words, target_wpm, sr=self.sr)
             pred_dur = torch.round(duration.squeeze()).clamp(min=1)
 
 

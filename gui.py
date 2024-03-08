@@ -499,10 +499,10 @@ class StyleTTS2GUI(QMainWindow):
 
         start_time = time.time()
         n_infer = self.config.n_infer
+        if self.longform_single.isChecked() and self.longform.isChecked():
+            n_infer = 1
         if not self.longform.isChecked():
             for i in range(n_infer):
-                self.infer_progress.setValue(
-                    int((i+1)*100/(self.config.n_infer)))
                 j = i
                 while os.path.exists(self.output_name(j)):
                     j += 1
@@ -524,15 +524,19 @@ class StyleTTS2GUI(QMainWindow):
                 except Exception as e:
                     traceback.print_exception(e)
                     logger.error(e)
+                    self.infer_progress.setValue(0)
                     return
                 sf.write(output_name, out, self.core.sr, format='flac')
                 self.audio_previews[i].from_file(output_name)
                 self.audio_previews[i].set_text(output_basename)
+                self.infer_progress.setValue(
+                    int((i+1)*100/(n_infer)))
         else:
             for i in range(n_infer):
-                self.infer_progress.setValue(
-                    int((i+1)*100/(self.config.n_infer)))
+                base_val = int((i)*100/(n_infer))
+                div = 100/n_infer
                 j = i
+                self.infer_progress.setValue(base_val)
                 while os.path.exists(self.output_name(j)):
                     j += 1
                 output_name = self.output_name(j)
@@ -544,7 +548,7 @@ class StyleTTS2GUI(QMainWindow):
                 textlist = sent_tokenize(self.text_field.toPlainText())
                 s_prev = None
                 wavs = []
-                for text in textlist:
+                for i2,text in enumerate(textlist):
                     try:
                         wav, s_prev, ps = self.core.LFinference(text,
                             s_prev,
@@ -556,18 +560,23 @@ class StyleTTS2GUI(QMainWindow):
                             embedding_scale=float(self.embedding_scale.text()),
                             target_wpm=target_wpm,
                             f0_adjust=int(self.f0.text()))
+                        self.infer_progress.setValue(base_val +
+                            int(i2/len(textlist)*div))
                     except Exception as e:
                         traceback.print_exception(e)
                         logger.error(e)
+                        self.infer_progress.setValue(0)
+                        return
                     wavs.append(wav)
                 out = np.concatenate(wavs)
                 sf.write(output_name, out, self.core.sr, format='flac')
                 self.audio_previews[i].from_file(output_name)
                 self.audio_previews[i].set_text(output_basename)
+                self.infer_progress.setValue(int((i+1)*100/(n_infer)))
         dur = time.time() - start_time
         self.phonemes_label.setText(f"Phonemes: {ps}")
         self.infer_time.setText(f"Inference time: {dur}s ("
-            f"{dur/self.config.n_infer}s/it)")
+            f"{dur/n_infer}s/it)")
 
 
 def gui_main(config):
