@@ -1,5 +1,5 @@
 # Setup (Windows)
-Download the [release](https://drive.google.com/file/d/1iW07K222Hj5jRN7zWCu1FPaAaRtXIoUk/view?usp=sharing).
+Download the [release](https://drive.google.com/file/d/1qtS7s1TTJ8LnPfo-cIfJCFuUJwfgHv7c/view?usp=drive_link).
 
 Download any desired extra models from [this repository](https://huggingface.co/therealvul/StyleTTS2_GUI_models/tree/main) and unzip them to the Models folder. Below is the expected file structure:
 ```
