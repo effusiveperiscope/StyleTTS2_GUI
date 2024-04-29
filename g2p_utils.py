@@ -60,7 +60,7 @@ def is_cmu_consonant(token):
 
 def load_dictionary(dict_path, remove_nums=True):
     arpadict = dict()
-    with open(dict_path, "r") as f:
+    with open(dict_path, "r", encoding='utf-8') as f:
         for line in f.readlines():
             word = line.split("  ")
             assert len(word) == 2
